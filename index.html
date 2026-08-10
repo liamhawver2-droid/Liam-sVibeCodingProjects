@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blue Square Decoder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">MEMORY GAME</p>
+          <h1>Blue Square Decoder</h1>
+          <p class="subtitle">Flip the numbered squares to reveal the hidden symbols and codes.</p>
+        </div>
+        <button id="new-game" class="new-game" type="button">New board</button>
+      </header>
+
+      <section class="stats" aria-label="Game status">
+        <div><span class="stat-value" id="flips">0</span><span class="stat-label">Flips</span></div>
+        <div><span class="stat-value" id="codes-found">0 / 8</span><span class="stat-label">Codes found</span></div>
+        <div><span class="stat-value">20</span><span class="stat-label">Squares</span></div>
+      </section>
+
+      <section id="board" class="board" aria-label="Twenty hidden squares"></section>
+      <p id="hint" class="hint">There are 8 codes and 12 stars hidden on this board.</p>
+    </main>
+
+    <section class="code-bar" aria-label="Enter the secret codes">
+      <div class="code-bar-inner">
+        <div class="code-bar-heading">
+          <span class="eyebrow">FINAL CHECK</span>
+          <strong>Enter code 1 through code 8, with no spaces</strong>
+        </div>
+        <form id="code-form" class="code-form">
+          <div class="single-code-field">
+            <input id="code-entry" inputmode="text" autocomplete="off" aria-label="Complete code, from 1 through 8" placeholder="Enter all 32 letters in order" />
+            <span id="result" class="result" aria-hidden="true"></span>
+          </div>
+          <button class="check-button" type="submit">Check codes</button>
+        </form>
+        <p id="check-message" class="check-message" aria-live="polite"></p>
+      </div>
+    </section>
+    <script src="script.js"></script>
+  </body>
+</html>

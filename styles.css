@@ -1,0 +1,87 @@
+:root {
+  --navy: #08234a;
+  --blue: #1877e8;
+  --blue-dark: #0d58ba;
+  --ice: #f2f8ff;
+  --gold: #ffc84a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--navy);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at 15% 0%, #d6ecff, transparent 34rem), linear-gradient(135deg, #f8fcff 0%, #ddebfb 100%);
+  padding-bottom: 185px;
+}
+
+.game-shell { width: min(980px, calc(100% - 32px)); margin: 0 auto; padding: 48px 0 56px; }
+.hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+.eyebrow { margin: 0 0 7px; color: var(--blue); font-size: .72rem; font-weight: 800; letter-spacing: .14em; }
+h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); letter-spacing: -.055em; line-height: 1; }
+.subtitle { margin: 12px 0 0; max-width: 530px; color: #4d6685; font-size: 1rem; }
+
+.new-game {
+  flex: 0 0 auto; border: 0; border-radius: 12px; padding: 13px 18px; color: white; background: var(--navy);
+  font: inherit; font-weight: 750; cursor: pointer; transition: transform .18s ease, background .18s ease;
+}
+.new-game:hover { background: #123b72; transform: translateY(-2px); }
+.new-game:focus-visible, .tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 24px; border: 1px solid #cfdef0; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,.75); box-shadow: 0 10px 28px rgba(23, 76, 139, .08); }
+.stats div { padding: 14px 20px; display: grid; gap: 2px; }
+.stats div + div { border-left: 1px solid #cfdef0; }
+.stat-value { font-size: 1.18rem; font-weight: 800; }
+.stat-label { color: #6580a2; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+
+.board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 15px; perspective: 950px; }
+.tile { aspect-ratio: 1; padding: 0; border: 0; border-radius: 16px; background: transparent; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform .48s cubic-bezier(.2,.75,.25,1); }
+.tile.flipped { transform: rotateY(180deg); }
+.tile-face { position: absolute; inset: 0; display: grid; place-items: center; border-radius: inherit; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.tile-front { color: white; background: linear-gradient(145deg, #3292ff, var(--blue)); border: 2px solid rgba(255,255,255,.45); box-shadow: 0 9px 18px rgba(14, 92, 190, .24), inset 0 1px 0 rgba(255,255,255,.42); font-size: clamp(1.25rem, 3.2vw, 1.8rem); font-weight: 850; }
+.tile-front::after { content: ""; width: 38%; height: 38%; position: absolute; border-radius: 9px; border: 2px solid rgba(255,255,255,.2); }
+.tile-back { transform: rotateY(180deg); background: white; border: 2px solid #bed8f4; box-shadow: 0 9px 18px rgba(19, 75, 140, .11); }
+.tile.code .tile-back { color: #073e87; background: linear-gradient(145deg, #eef7ff, #cfe8ff); border-color: #63aaf1; }
+.tile.star .tile-back { color: #b67a00; background: linear-gradient(145deg, #fffdf4, #fff2bf); border-color: #f0cf6c; }
+.code-text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: clamp(.72rem, 2.2vw, 1.25rem); font-weight: 900; letter-spacing: -.06em; }
+.star-text { font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1; }
+.hint { margin: 20px 0 0; text-align: center; color: #5a7394; font-size: .92rem; }
+
+.code-bar { position: fixed; z-index: 2; right: 0; bottom: 0; left: 0; border-top: 1px solid #c7dbf1; background: rgba(250,253,255,.94); box-shadow: 0 -10px 30px rgba(14, 66, 125, .12); backdrop-filter: blur(12px); }
+.code-bar-inner { width: min(980px, calc(100% - 32px)); margin: 0 auto; padding: 13px 0 14px; }
+.code-bar-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.code-bar-heading .eyebrow { margin: 0; }
+.code-bar-heading strong { font-size: .9rem; }
+.code-form { display: flex; align-items: center; gap: 14px; }
+.single-code-field { position: relative; flex: 1; }
+.single-code-field input { width: 100%; padding: 10px 36px 10px 13px; border: 1px solid #bcd3ec; border-radius: 9px; color: var(--navy); background: white; font: 800 1rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .1em; text-transform: lowercase; outline: none; }
+.single-code-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #b9dcff; }
+.single-code-field .result { position: absolute; top: 11px; right: 12px; font-size: 1.12rem; font-weight: 900; line-height: 1; }
+.single-code-field.correct input { border-color: #37a65a; background: #effcf3; }
+.single-code-field.correct .result { color: #15933d; }
+.single-code-field.wrong input { border-color: #dc5555; background: #fff4f4; }
+.single-code-field.wrong .result { color: #cf3131; }
+.check-button { flex: 0 0 auto; border: 0; border-radius: 9px; padding: 10px 14px; color: white; background: var(--blue-dark); font: inherit; font-weight: 800; cursor: pointer; }
+.check-button:hover { background: var(--navy); }
+.check-message { min-height: 1em; margin: 7px 0 0; color: #527092; font-size: .79rem; font-weight: 650; }
+.check-message.success { color: #168a3c; }
+
+@media (max-width: 560px) {
+  .game-shell { width: min(100% - 22px, 980px); padding-top: 28px; }
+  .hero { align-items: flex-start; flex-direction: column; margin-bottom: 22px; }
+  .new-game { width: 100%; }
+  .board { gap: 8px; }
+  .tile, .tile-face { border-radius: 10px; }
+  .stats div { padding: 11px 9px; }
+  .stat-value { font-size: 1rem; }
+  body { padding-bottom: 245px; }
+  .code-bar-inner { width: min(100% - 22px, 980px); }
+  .code-bar-heading { margin-bottom: 6px; }
+  .code-form { align-items: stretch; flex-direction: column; gap: 8px; }
+  .single-code-field input { padding: 9px 32px 9px 9px; font-size: .78rem; letter-spacing: .04em; }
+  .single-code-field .result { top: 10px; right: 9px; }
+  .check-button { padding: 8px; }
+  .check-message { margin-top: 5px; }
+}
