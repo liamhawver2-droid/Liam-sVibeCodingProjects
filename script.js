@@ -1,6 +1,7 @@
 const board = document.querySelector('#board');
 const flipsDisplay = document.querySelector('#flips');
 const codesDisplay = document.querySelector('#codes-found');
+const timerDisplay = document.querySelector('#timer');
 const hint = document.querySelector('#hint');
 const newGame = document.querySelector('#new-game');
 const codeForm = document.querySelector('#code-form');
@@ -13,6 +14,9 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 let flips = 0;
 let codesFound = 0;
 let answerKey = [];
+let timerStartedAt = null;
+let timerInterval = null;
+let isComplete = false;
 
 function shuffle(items) {
   for (let index = items.length - 1; index > 0; index -= 1) {
@@ -35,9 +39,36 @@ function updateStatus() {
     : 'There are 8 codes and 12 stars hidden on this board.';
 }
 
+function formatTime(milliseconds) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = String(totalSeconds % 60).padStart(2, '0');
+  return `${minutes}:${seconds}`;
+}
+
+function updateTimer() {
+  if (timerStartedAt !== null) timerDisplay.textContent = formatTime(Date.now() - timerStartedAt);
+}
+
+function startTimer() {
+  if (timerStartedAt !== null) return;
+  timerStartedAt = Date.now();
+  updateTimer();
+  timerInterval = window.setInterval(updateTimer, 1000);
+}
+
+function stopTimer() {
+  window.clearInterval(timerInterval);
+  timerInterval = null;
+}
+
 function createBoard() {
+  stopTimer();
   flips = 0;
   codesFound = 0;
+  timerStartedAt = null;
+  isComplete = false;
+  timerDisplay.textContent = '0:00';
   board.replaceChildren();
   answerKey = Array.from({ length: 8 }, () => makeCode());
   const tiles = shuffle([
@@ -61,6 +92,7 @@ function createBoard() {
 
     tile.addEventListener('click', () => {
       if (tile.classList.contains('flipped')) return;
+      if (!isComplete) startTimer();
       tile.classList.add('flipped');
       tile.setAttribute('aria-label', `Square ${index + 1}, ${tileData.type === 'code' ? `code ${tileData.value}` : 'star'}`);
       flips += 1;
@@ -86,7 +118,11 @@ codeForm.addEventListener('submit', (event) => {
   codeField.classList.toggle('correct', isCorrect);
   codeField.classList.toggle('wrong', !isCorrect);
   result.textContent = isCorrect ? '✓' : '✕';
-  checkMessage.textContent = isCorrect ? 'You decoded the complete code — you win!' : 'That sequence is not quite right. Check the code labels and try again.';
+  if (isCorrect) {
+    isComplete = true;
+    stopTimer();
+  }
+  checkMessage.textContent = isCorrect ? `You decoded the complete code in ${timerDisplay.textContent} — you win!` : 'That sequence is not quite right. Check the code labels and try again.';
   checkMessage.classList.toggle('success', isCorrect);
 });
 createBoard();
