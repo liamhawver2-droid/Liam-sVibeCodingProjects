@@ -15,7 +15,7 @@ let flips = 0;
 let codesFound = 0;
 let answerKey = [];
 let timerStartedAt = null;
-let timerInterval = null;
+let timerFrame = null;
 let isComplete = false;
 
 function shuffle(items) {
@@ -54,12 +54,16 @@ function startTimer() {
   if (timerStartedAt !== null) return;
   timerStartedAt = Date.now();
   updateTimer();
-  timerInterval = window.setInterval(updateTimer, 1000);
+  const tickTimer = () => {
+    updateTimer();
+    timerFrame = window.requestAnimationFrame(tickTimer);
+  };
+  timerFrame = window.requestAnimationFrame(tickTimer);
 }
 
 function stopTimer() {
-  window.clearInterval(timerInterval);
-  timerInterval = null;
+  window.cancelAnimationFrame(timerFrame);
+  timerFrame = null;
 }
 
 function createBoard() {
